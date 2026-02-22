@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login / Signup - Tech Resque</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">
+        <i class="fas fa-tools"></i> Tech Resque
+      </a>
+      <div style="flex:1"></div>
+      <a href="index.html" class="btn secondary">Back to Home</a>
+    </div>
+  </nav>
+
+  <main class="container" style="max-width:900px">
+    <div style="background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);overflow:hidden;display:grid;grid-template-columns:1fr 1fr;margin-top:40px;margin-bottom:40px">
+      <!-- Left Side - Info -->
+      <div style="background:linear-gradient(135deg,#1a73e8 0%,#0d47a1 100%);color:#fff;padding:40px;display:flex;flex-direction:column;justify-content:center">
+        <h2 style="margin:0 0 20px 0;font-size:28px">Welcome Back!</h2>
+        <p style="margin:0 0 16px 0;color:rgba(255,255,255,0.9)">Join thousands of customers and professionals using Tech Resque for reliable home services.</p>
+        <div style="margin-top:20px">
+          <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center">
+            <i class="fas fa-check-circle" style="font-size:20px"></i>
+            <span>Verified & trusted professionals</span>
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center">
+            <i class="fas fa-check-circle" style="font-size:20px"></i>
+            <span>Secure & safe transactions</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <i class="fas fa-check-circle" style="font-size:20px"></i>
+            <span>24/7 customer support</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Forms -->
+      <div style="padding:40px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px">
+          <h2 id="form-title" style="font-size:24px;margin:0">Login</h2>
+        </div>
+
+        <div id="forms">
+          <!-- Login Form -->
+          <form id="login-form">
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Email Address</label>
+              <input name="email" type="email" placeholder="Enter your email" required />
+            </div>
+            <div style="margin-bottom:20px">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Password</label>
+              <input name="password" type="password" placeholder="Enter your password" required />
+            </div>
+            <button type="submit" style="width:100%;padding:12px;margin-bottom:16px">Login</button>
+          </form>
+
+          <!-- Signup Form -->
+          <form id="signup-form" style="display:none">
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Full Name</label>
+              <input name="name" placeholder="Enter your full name" required />
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Email Address</label>
+              <input name="email" type="email" placeholder="Enter your email" required />
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Phone Number</label>
+              <input name="phone" placeholder="Enter your phone number" />
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">I am a</label>
+              <select name="role" id="role-select">
+                <option value="customer">Customer - Booking Services</option>
+                <option value="provider">Professional - Providing Services</option>
+              </select>
+            </div>
+            <div id="service-type-field" style="margin-bottom:16px;display:none">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">My Service Specialty</label>
+              <select name="serviceType">
+                <option value="">Select your specialty</option>
+                <option value="Electrician">Electrician</option>
+                <option value="Plumber">Plumber</option>
+                <option value="Device Repair">Device Repair</option>
+                <option value="Cleaning">Cleaning</option>
+                <option value="Painting">Painting</option>
+                <option value="Home Repair">Home Repair</option>
+              </select>
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Address</label>
+              <div style="display:flex;gap:8px">
+                <input name="address" placeholder="Enter your address" required />
+                <button type="button" id="location-btn" style="padding:10px 16px;min-width:120px;white-space:nowrap" title="Get current location">
+                  <i class="fas fa-location-dot"></i> My Location
+                </button>
+              </div>
+              <input type="hidden" name="latitude" value="" />
+              <input type="hidden" name="longitude" value="" />
+              <small id="location-status" style="color:#1a73e8;margin-top:4px;display:block"></small>
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-weight:600;margin-bottom:8px;font-size:14px">Preferred Payment Method</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border:1px solid #ddd;border-radius:4px;font-weight:500">
+                  <input type="radio" name="paymentMethod" value="cash" checked /> Cash
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border:1px solid #ddd;border-radius:4px;font-weight:500">
+                  <input type="radio" name="paymentMethod" value="card" /> Card
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border:1px solid #ddd;border-radius:4px;font-weight:500">
+                  <input type="radio" name="paymentMethod" value="upi" /> UPI
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border:1px solid #ddd;border-radius:4px;font-weight:500">
+                  <input type="radio" name="paymentMethod" value="bank" /> Bank
+                </label>
+              </div>
+            </div>
+            <div id="payment-details" style="margin-bottom:16px;display:none">
+              <div id="upi-field" style="margin-bottom:12px;display:none">
+                <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">UPI ID</label>
+                <input name="upiId" placeholder="example@upi" />
+              </div>
+              <div id="card-field" style="margin-bottom:12px;display:none">
+                <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Card Last 4 Digits</label>
+                <input name="cardLast4" placeholder="e.g., 1234" maxlength="4" />
+              </div>
+              <div id="bank-field" style="margin-bottom:12px;display:none">
+                <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Bank Account Number</label>
+                <input name="bankAccount" placeholder="Account number" />
+              </div>
+            </div>
+            <div style="margin-bottom:20px">
+              <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Password</label>
+              <input name="password" type="password" placeholder="Create a password" required />
+            </div>
+            <button type="submit" style="width:100%;padding:12px;margin-bottom:16px">Create Account</button>
+          </form>
+        </div>
+
+        <!-- Toggle Button -->
+        <div style="text-align:center;border-top:1px solid #e8e8e8;padding-top:16px">
+          <p style="margin:0;font-size:14px;color:#666">
+            <span id="toggle-text">Don't have an account?</span>
+            <button id="toggle-btn" type="button" style="background:none;border:none;color:#1a73e8;cursor:pointer;font-weight:600;padding:0;font-size:14px;text-decoration:underline">
+              <span id="toggle-label">Sign Up</span>
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer style="background:#2c3e50;color:#fff;padding:40px 20px;text-align:center;margin-top:40px">
+    <div class="container">
+      <p style="margin:0 0 12px 0"><strong>Tech Resque</strong> - Your Service Partner</p>
+      <p style="margin:0;color:rgba(255,255,255,0.7);font-size:13px">© 2026 Tech Resque. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

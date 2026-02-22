@@ -1,0 +1,302 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tech Resque - Professional Services at Your Door</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>const API = 'http://localhost:5000/api';</script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">
+        <i class="fas fa-tools"></i> Tech Resque
+      </a>
+      <ul class="nav-links">
+        <li><a href="#services">All Services</a></li>
+        <li><a href="#popular">Popular</a></li>
+      </ul>
+      <div class="nav-location">
+        <i class="fas fa-map-marker-alt"></i> Current Location
+      </div>
+      <a href="auth.html" class="btn">Login / Sign Up</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Service Categories -->
+    <section style="margin-top:20px">
+      <h2 style="margin:12px 0">What are you looking for?</h2>
+      <div class="service-categories">
+        <div class="category-card" onclick="filterServices('all')">
+          <div class="category-icon">🔌</div>
+          <p>Electrician</p>
+        </div>
+        <div class="category-card" onclick="filterServices('plumber')">
+          <div class="category-icon">🚰</div>
+          <p>Plumber</p>
+        </div>
+        <div class="category-card" onclick="filterServices('repair')">
+          <div class="category-icon">💻</div>
+          <p>Tech Repair</p>
+        </div>
+        <div class="category-card" onclick="filterServices('cleaning')">
+          <div class="category-icon">🧹</div>
+          <p>Cleaning</p>
+        </div>
+        <div class="category-card" onclick="filterServices('painting')">
+          <div class="category-icon">🎨</div>
+          <p>Painting</p>
+        </div>
+        <div class="category-card" onclick="filterServices('home')">
+          <div class="category-icon">🏠</div>
+          <p>Home Repair</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Most Booked Services -->
+    <section id="popular">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 style="margin:0">Most Booked Services</h2>
+          <p class="section-subtitle">Get work done by our trusted professionals</p>
+        </div>
+      </div>
+      <div class="cards-scroll">
+        <div class="service-card electrician">
+          <div class="service-image">🔌</div>
+          <div class="service-content">
+            <div class="service-title">Electrical Wiring & Installation</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.87</span>
+                <span class="service-reviews">(2.1K)</span>
+              </div>
+            </div>
+            <div class="service-price">₹399</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+
+        <div class="service-card plumber">
+          <div class="service-image">🚰</div>
+          <div class="service-content">
+            <div class="service-title">Tap & Leak Repair</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.79</span>
+                <span class="service-reviews">(1.5K)</span>
+              </div>
+            </div>
+            <div class="service-price">₹299</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+
+        <div class="service-card repair">
+          <div class="service-image">💻</div>
+          <div class="service-content">
+            <div class="service-title">Device Repair & Diagnosis</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.85</span>
+                <span class="service-reviews">(3.2K)</span>
+              </div>
+            </div>
+            <div class="service-price">₹499</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+
+        <div class="service-card cleaning">
+          <div class="service-image">🧹</div>
+          <div class="service-content">
+            <div class="service-title">Home Deep Cleaning</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.80</span>
+                <span class="service-reviews">(4.5M)</span>
+              </div>
+            </div>
+            <div class="service-price">₹1,018</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+
+        <div class="service-card painting">
+          <div class="service-image">🎨</div>
+          <div class="service-content">
+            <div class="service-title">Home Painting Service</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.82</span>
+                <span class="service-reviews">(2.8K)</span>
+              </div>
+            </div>
+            <div class="service-price">₹2,499</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+
+        <div class="service-card home">
+          <div class="service-image">🏠</div>
+          <div class="service-content">
+            <div class="service-title">Door Lock & Hinge Repair</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.84</span>
+                <span class="service-reviews">(892)</span>
+              </div>
+            </div>
+            <div class="service-price">₹259</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- New & Noteworthy -->
+    <section>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 style="margin:0">New & Noteworthy</h2>
+          <p class="section-subtitle">Explore our latest services</p>
+        </div>
+      </div>
+      <div class="cards-scroll">
+        <div class="service-card new">
+          <div style="position:relative">
+            <div class="service-image" style="height:160px">🔐</div>
+            <div class="badge-new" style="position:absolute;top:10px;right:10px">New</div>
+          </div>
+          <div class="service-content">
+            <div class="service-title">Smart Lock Installation</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.88</span>
+                <span class="service-reviews">(580)</span>
+              </div>
+            </div>
+            <div class="service-price">₹1,999</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+
+        <div class="service-card new">
+          <div style="position:relative">
+            <div class="service-image" style="height:160px">💡</div>
+            <div class="badge-new" style="position:absolute;top:10px;right:10px">New</div>
+          </div>
+          <div class="service-content">
+            <div class="service-title">LED Lighting Installation</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.83</span>
+                <span class="service-reviews">(420)</span>
+              </div>
+            </div>
+            <div class="service-price">₹599</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+
+        <div class="service-card new">
+          <div style="position:relative">
+            <div class="service-image" style="height:160px">🚰</div>
+            <div class="badge-new" style="position:absolute;top:10px;right:10px">New</div>
+          </div>
+          <div class="service-content">
+            <div class="service-title">Water Purifier Installation</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.81</span>
+                <span class="service-reviews">(310)</span>
+              </div>
+            </div>
+            <div class="service-price">₹1,499</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+
+        <div class="service-card new">
+          <div style="position:relative">
+            <div class="service-image" style="height:160px">🔧</div>
+            <div class="badge-new" style="position:absolute;top:10px;right:10px">New</div>
+          </div>
+          <div class="service-content">
+            <div class="service-title">Appliance Servicing</div>
+            <div class="service-details">
+              <div class="service-rating">
+                <span class="stars">★</span>
+                <span>4.86</span>
+                <span class="service-reviews">(650)</span>
+              </div>
+            </div>
+            <div class="service-price">₹899</div>
+            <button class="service-btn" onclick="window.location.href='auth.html'">Book Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section style="margin-top:40px;margin-bottom:40px">
+      <h2>Why Choose Tech Resque?</h2>
+      <div class="grid">
+        <div class="card">
+          <h3><i class="fas fa-star" style="color:#fbbc04;margin-right:8px"></i>Verified Professionals</h3>
+          <p>All our professionals are thoroughly vetted and highly rated by our customers.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-shield-alt" style="color:#34a853;margin-right:8px"></i>100% Safe & Secure</h3>
+          <p>Your home and belongings are safe. All professionals are insured.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-headset" style="color:#1a73e8;margin-right:8px"></i>24/7 Customer Support</h3>
+          <p>Our support team is available round the clock to help you.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-clock" style="color:#ea4335;margin-right:8px"></i>On-Time Service</h3>
+          <p>Professionals arrive on time. If late, you get a discount on the service.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="background:#1a73e8;color:#fff;padding:40px 20px;border-radius:8px;text-align:center;margin-bottom:40px">
+      <h2 style="color:#fff;margin:0 0 12px 0">Ready to Get Services Done?</h2>
+      <p style="margin:0 0 20px 0;color:rgba(255,255,255,0.95)">Book trusted professionals for any home service in just a few taps</p>
+      <a href="auth.html" class="btn" style="background:#fff;color:#1a73e8">Get Started Now</a>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer style="background:#2c3e50;color:#fff;padding:40px 20px;text-align:center">
+    <div class="container">
+      <p style="margin:0 0 12px 0"><strong>Tech Resque</strong> - Your Service Partner</p>
+      <p style="margin:0;color:rgba(255,255,255,0.7);font-size:13px">© 2026 Tech Resque. All rights reserved. | <a href="#" style="color:rgba(255,255,255,0.7)">Terms</a> | <a href="#" style="color:rgba(255,255,255,0.7)">Privacy</a></p>
+    </div>
+  </footer>
+
+  <script src="js/ui.js"></script>
+  <script>
+    function filterServices(category) {
+      window.location.href = 'auth.html';
+    }
+  </script>
+</body>
+</html>

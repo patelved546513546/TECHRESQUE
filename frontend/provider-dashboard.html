@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Provider Dashboard - Tech Resque</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">
+        <i class="fas fa-tools"></i> Tech Resque
+      </a>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
+          <i class="fas fa-circle-notch" id="availability-icon" style="color:#34a853"></i>
+          Available
+          <input id="availability" type="checkbox" style="width:18px;height:18px;cursor:pointer" checked />
+        </label>
+        <div style="width:1px;height:24px;background:#e8e8e8"></div>
+        <select id="service-type-selector" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-weight:600;cursor:pointer;background:#fff">
+          <option value="">Select your specialty</option>
+          <option value="Electrician">⚡ Electrician</option>
+          <option value="Plumber">🔧 Plumber</option>
+          <option value="Device Repair">📱 Device Repair</option>
+          <option value="Cleaning">🧹 Cleaning</option>
+          <option value="Painting">🎨 Painting</option>
+          <option value="Home Repair">🏠 Home Repair</option>
+        </select>
+        <div style="width:1px;height:24px;background:#e8e8e8"></div>
+        <span id="welcome-name" style="font-weight:600"></span>
+        <button id="logout-btn" class="btn secondary" style="padding:8px 16px;font-size:13px">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section style="background:linear-gradient(135deg,#34a853 0%,#2d7a3f 100%);color:#fff;padding:40px 20px;border-radius:8px;margin:30px 0">
+      <h1 style="margin:0 0 8px 0">Welcome, Professional!</h1>
+      <p style="margin:0;color:rgba(255,255,255,0.9)">Manage your jobs and track your earnings</p>
+    </section>
+
+    <!-- Statistics -->
+    <section style="margin:40px 0">
+      <h2 style="margin-bottom:20px">Your Performance</h2>
+      <div class="grid">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <p style="margin:0 0 8px 0;color:#666;font-size:14px">Active Jobs</p>
+              <div id="stat-active" style="font-size:32px;font-weight:700;color:#1a73e8">0</div>
+            </div>
+            <i class="fas fa-briefcase" style="font-size:32px;color:#e8e8e8"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <p style="margin:0 0 8px 0;color:#666;font-size:14px">Completed Today</p>
+              <div id="stat-completed" style="font-size:32px;font-weight:700;color:#34a853">0</div>
+            </div>
+            <i class="fas fa-check-circle" style="font-size:32px;color:#e8e8e8"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <p style="margin:0 0 8px 0;color:#666;font-size:14px">Total Earnings</p>
+              <div id="earnings" style="font-size:32px;font-weight:700;color:#fbbc04">₹0</div>
+            </div>
+            <i class="fas fa-rupee-sign" style="font-size:32px;color:#e8e8e8"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Earnings Breakdown -->
+    <section style="margin:40px 0">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px">
+        <h2 style="margin:0">💰 Earnings Breakdown</h2>
+        <span id="total-earnings" style="background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff;padding:6px 14px;border-radius:20px;font-weight:700;font-size:13px">₹0</span>
+      </div>
+      <div class="grid">
+        <div style="background:linear-gradient(135deg,#6366f1 0%,#4f46e5 100%);color:#fff;padding:24px;border-radius:16px;box-shadow:0 10px 15px -3px rgba(99, 102, 241, 0.1);animation:slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0s both">
+          <p style="margin:0 0 8px 0;color:rgba(255,255,255,0.8);font-size:13px;font-weight:600">📅 TODAY</p>
+          <div id="earnings-today" style="font-size:28px;font-weight:700">₹0</div>
+          <p style="margin:8px 0 0 0;color:rgba(255,255,255,0.7);font-size:12px">Today's earnings</p>
+        </div>
+        <div style="background:linear-gradient(135deg,#ec4899 0%,#be185d 100%);color:#fff;padding:24px;border-radius:16px;box-shadow:0 10px 15px -3px rgba(236, 72, 153, 0.1);animation:slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both">
+          <p style="margin:0 0 8px 0;color:rgba(255,255,255,0.8);font-size:13px;font-weight:600">📊 THIS WEEK</p>
+          <div id="earnings-week" style="font-size:28px;font-weight:700">₹0</div>
+          <p style="margin:8px 0 0 0;color:rgba(255,255,255,0.7);font-size:12px">Weekly total</p>
+        </div>
+        <div style="background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:#fff;padding:24px;border-radius:16px;box-shadow:0 10px 15px -3px rgba(245, 158, 11, 0.1);animation:slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both">
+          <p style="margin:0 0 8px 0;color:rgba(255,255,255,0.8);font-size:13px;font-weight:600">📈 THIS MONTH</p>
+          <div id="earnings-month" style="font-size:28px;font-weight:700">₹0</div>
+          <p style="margin:8px 0 0 0;color:rgba(255,255,255,0.7);font-size:12px">Monthly total</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pending Requests -->
+    <section style="margin:40px 0">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px">
+        <h2 style="margin:0">📋 Pending Requests</h2>
+        <span id="pending-count" style="background:#f59e0b;color:#fff;padding:4px 12px;border-radius:20px;font-weight:700;font-size:14px">0</span>
+      </div>
+      <p style="margin:0 0 20px 0;color:#666;font-size:15px">New service requests matching your expertise - accept to start earning!</p>
+      <div id="pending-container" style="display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))"></div>
+      <div id="empty-pending" style="text-align:center;padding:60px 20px;background:linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%);border-radius:12px;color:#666;border:2px dashed #d1d5db;display:none">
+        <i class="fas fa-inbox" style="font-size:56px;color:#c4b5fd;display:block;margin-bottom:16px"></i>
+        <p style="margin:0;font-size:16px;font-weight:600">No pending requests right now</p>
+        <p style="margin:8px 0 0 0;color:#999;font-size:14px">Check back soon or adjust your availability!</p>
+      </div>
+    </section>
+
+    <!-- Assigned Jobs -->
+    <section style="margin:40px 0;margin-bottom:80px">
+      <h2 style="margin-bottom:20px">My Assigned Jobs</h2>
+      <div id="assigned-jobs-container">
+        <div id="assigned" style="display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))"></div>
+      </div>
+      <div id="empty-jobs" style="text-align:center;padding:40px;background:#f5f5f5;border-radius:8px;color:#666">
+        <i class="fas fa-check-circle" style="font-size:48px;color:#34a853;display:block;margin-bottom:16px"></i>
+        <p style="margin:0">No jobs assigned yet. Check back soon!</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer style="background:#2c3e50;color:#fff;padding:40px 20px;text-align:center;margin-top:40px">
+    <div class="container">
+      <p style="margin:0 0 12px 0"><strong>Tech Resque</strong> - Your Service Partner</p>
+      <p style="margin:0;color:rgba(255,255,255,0.7);font-size:13px">© 2026 Tech Resque. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/ui.js"></script>
+  <script src="js/provider.js"></script>
+</body>
+</html>
