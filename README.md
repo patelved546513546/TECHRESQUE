@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Tech Resque — Service Auto-Assignment Platform
 
 A modern service booking platform with **automatic provider assignment** (like Urban Company). When customers book services, available providers matching their specialty are instantly and randomly assigned within milliseconds.
@@ -320,3 +321,58 @@ For issues or questions:
 ---
 
 **Status:** ✅ Production Ready | **Version:** 2.0 | **Last Updated:** February 2026
+=======
+# TECHRESQUE
+>>>>>>> 81af8cd54b30ba56aae3735cdbee77ec3537d6d7
+
+# TECHRESQUE
+
+Tech Resque is a modern service booking platform (customers, providers, admin). This repository contains a demo project with a Node/Express backend and a vanilla JavaScript frontend.
+
+Key features included in this repo:
+
+- Provider and customer signup/login (JWT)
+- Provider specialty selection + availability toggle
+- Service request creation (pending -> assigned -> in_progress -> completed)
+- Pending requests listing for providers and accept flow
+- 10-day expiration for pending requests
+- Simple earnings calculation (provider share)
+- Frontend served statically by Express (server serves `frontend/`)
+
+See the `backend` and `frontend` folders for implementation details.
+
+Quick start
+-----------
+1. Install dependencies
+
+```bash
+cd tech-resque
+npm install
+```
+
+2. Configure environment (copy `.env.example` to `backend/.env` and edit values)
+
+3. Start MongoDB and seed data
+
+```bash
+npm run seed
+```
+
+4. Start server
+
+```bash
+npm run dev
+# or for production
+npm start
+```
+
+The app will be available at http://127.0.0.1:5000
+
+Repository structure
+--------------------
+See the `frontend` and `backend` folders for detailed code. Frontend files are in `frontend/` and backend in `backend/`.
+
+License & notes
+---------------
+This demo is provided as-is for development and testing. Do NOT run with default secrets in production.
+
