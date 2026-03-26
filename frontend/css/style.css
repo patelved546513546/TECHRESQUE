@@ -479,41 +479,6 @@ section .section-subtitle {
   z-index: 0;
 }
 
-.service-card.electrician .service-image {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.8) 0%, rgba(249, 115, 22, 0.8) 100%),
-    url('https://images.unsplash.com/photo-1621558227872-a8a4f9c1e8fd?w=400&h=300&fit=crop');
-}
-
-.service-card.plumber .service-image {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(30, 64, 175, 0.8) 100%),
-    url('https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&h=300&fit=crop');
-}
-
-.service-card.repair .service-image {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(109, 40, 217, 0.8) 100%),
-    url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop');
-}
-
-.service-card.cleaning .service-image {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.8) 0%, rgba(5, 150, 105, 0.8) 100%),
-    url('https://images.unsplash.com/photo-1584622614875-2f3eebf11d5f?w=400&h=300&fit=crop');
-}
-
-.service-card.painting .service-image {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.8) 0%, rgba(220, 38, 38, 0.8) 100%),
-    url('https://images.unsplash.com/photo-1561599810-2d8203e54c87?w=400&h=300&fit=crop');
-}
-
-.service-card.home .service-image {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.8) 0%, rgba(8, 145, 178, 0.8) 100%),
-    url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop');
-}
-
-.service-card.new .service-image {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%),
-    url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop');
-}
-
 .service-content {
   padding: 16px;
 }

@@ -8,6 +8,13 @@ if (!token || !me) location.href='auth.html';
 if (me?.role !== 'customer') location.href='auth.html';
 
 const API_BASE = 'http://localhost:5000/api';
+const ISSUE_OPTIONS = {
+  Electrician: ['Bulb/Fan not working', 'Switch/Socket issue', 'Wiring problem', 'MCB/Power trip', 'Appliance installation'],
+  Plumber: ['Tap leakage', 'Pipe blockage', 'Toilet issue', 'Water tank problem', 'Motor/Pump issue'],
+  'Device Repair': ['Phone not charging', 'Screen broken', 'Battery draining fast', 'Laptop not starting', 'Software issue'],
+  Cleaning: ['Deep home cleaning', 'Kitchen cleaning', 'Bathroom cleaning', 'Sofa/Carpet cleaning', 'Post-construction cleaning'],
+  Painting: ['Wall repaint', 'Patch/crack repair', 'Waterproof coating', 'Texture paint', 'Door/Window paint']
+};
 
 // Verify token is still valid on page load
 async function verifyAuth() {
@@ -31,6 +38,11 @@ async function verifyAuth() {
 document.getElementById('welcome-name').innerText = `${me?.name || 'Customer'}`;
 document.getElementById('logout-btn').addEventListener('click', ()=>{ localStorage.removeItem('token'); localStorage.removeItem('user'); location.href='auth.html'; });
 
+const bookForm = document.getElementById('book-form');
+const serviceTypeSelect = bookForm.querySelector('select[name="serviceType"]');
+const issueTypeField = document.getElementById('issue-type-field');
+const issueTypeSelect = bookForm.querySelector('select[name="issueType"]');
+
 // Verify auth and load data on page load
 verifyAuth().then(() => {
   loadRequests();
@@ -40,9 +52,44 @@ verifyAuth().then(() => {
 // Track current estimate
 let currentEstimate = null;
 
-document.getElementById('book-form').addEventListener('submit', async (e)=>{
+function populateIssueOptions(serviceType) {
+  const options = ISSUE_OPTIONS[serviceType] || [];
+  issueTypeSelect.innerHTML = '<option value="">Select issue type</option>';
+
+  if (options.length === 0) {
+    issueTypeField.style.display = 'none';
+    issueTypeSelect.required = false;
+    return;
+  }
+
+  options.forEach(issue => {
+    const opt = document.createElement('option');
+    opt.value = issue;
+    opt.innerText = issue;
+    issueTypeSelect.appendChild(opt);
+  });
+
+  issueTypeField.style.display = 'block';
+  issueTypeSelect.required = true;
+}
+
+serviceTypeSelect.addEventListener('change', (e) => {
+  populateIssueOptions(e.target.value);
+});
+
+bookForm.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const data = Object.fromEntries(new FormData(e.target).entries());
+
+  if (!data.serviceType) {
+    showToast('Please select service type', 'error');
+    return;
+  }
+
+  if (issueTypeSelect.required && !data.issueType) {
+    showToast('Please select the issue type', 'error');
+    return;
+  }
   
   // Add customer location
   data.latitude = me?.latitude;
@@ -107,6 +154,7 @@ function showEstimateDialog(bookingData, estimate) {
     
     <div style="background:#f0f9ff;padding:20px;border-radius:8px;border-left:4px solid #1a73e8;margin-bottom:24px">
       <p style="margin:0 0 12px 0;color:#0f172a;font-size:14px"><strong>Service:</strong> ${bookingData.serviceType}</p>
+      <p style="margin:0 0 12px 0;color:#0f172a;font-size:14px"><strong>Issue:</strong> ${bookingData.issueType || 'General request'}</p>
       <p style="margin:0 0 12px 0;color:#0f172a;font-size:14px"><strong>Base Price:</strong> ₹${bookingData.basePrice || 500}</p>
       <p style="margin:0 0 12px 0;color:#0f172a;font-size:14px"><strong>Distance:</strong> ${estimate.distanceKm || 0} km</p>
       ${estimate.distanceCharge > 0 ? `<p style="margin:0 0 12px 0;color:#ea4335;font-size:14px"><strong>Distance Charge:</strong> +₹${estimate.distanceCharge}</p>` : ''}
@@ -173,7 +221,8 @@ function showEstimateDialog(bookingData, estimate) {
       } else {
         showToast('📋 Service request submitted. Waiting for professionals.', 'info');
       }
-      document.getElementById('book-form').reset(); 
+      bookForm.reset();
+      populateIssueOptions('');
     }
     else showToast(json.message || 'Error submitting request', 'error');
   });
@@ -198,6 +247,7 @@ async function loadRequests(){
     list.forEach(s => {
       const tr = document.createElement('tr');
       const date = new Date(s.createdAt).toLocaleDateString('en-IN', {year:'numeric', month:'short', day:'numeric'});
+      const issueText = s.issueType ? `Issue: ${s.issueType}` : 'Issue: General request';
       const desc = s.description || '-';
       
       let statusDisplay = s.status;
@@ -216,7 +266,10 @@ async function loadRequests(){
       
       tr.innerHTML = `
         <td style="padding:16px;border-bottom:1px solid #e8e8e8">${s.serviceType}</td>
-        <td style="padding:16px;border-bottom:1px solid #e8e8e8">${desc.substring(0, 40)}${desc.length > 40 ? '...' : ''}</td>
+        <td style="padding:16px;border-bottom:1px solid #e8e8e8">
+          <small style="display:block;color:#1a73e8;font-weight:600;margin-bottom:4px">${issueText}</small>
+          ${desc.substring(0, 40)}${desc.length > 40 ? '...' : ''}
+        </td>
         <td style="padding:16px;border-bottom:1px solid #e8e8e8">
           <span class="badge ${s.status}">${s.status}</span>
           ${providerInfo !== '-' ? `<br><small style="color:#666;margin-top:4px;display:block">${providerInfo}</small>` : ''}

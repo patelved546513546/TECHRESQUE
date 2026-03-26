@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Login / Signup - Tech Resque</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
-<body>
+<body class="auth-page">
   <!-- Navigation -->
   <nav class="navbar">
     <div class="container">
@@ -73,7 +73,8 @@
             </div>
             <div style="margin-bottom:16px">
               <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Phone Number</label>
-              <input name="phone" placeholder="Enter your phone number" />
+              <input name="phone" placeholder="Enter 10-digit phone number" maxlength="10" pattern="[0-9]{10}" inputmode="numeric" required />
+              <small style="color:#64748b;display:block;margin-top:4px">Enter exactly 10 digits.</small>
             </div>
             <div style="margin-bottom:16px">
               <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">I am a</label>
@@ -139,7 +140,8 @@
             </div>
             <div style="margin-bottom:20px">
               <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Password</label>
-              <input name="password" type="password" placeholder="Create a password" required />
+              <input name="password" type="password" placeholder="Create a strong password" minlength="8" required />
+              <small style="color:#64748b;display:block;margin-top:4px">Use at least 8 characters with uppercase, lowercase, number, and special character.</small>
             </div>
             <button type="submit" style="width:100%;padding:12px;margin-bottom:16px">Create Account</button>
           </form>

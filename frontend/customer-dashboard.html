@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>My Orders - Tech Resque</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/customer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
-<body>
+<body class="customer-page">
   <!-- Navigation -->
   <nav class="navbar">
     <div class="container">
@@ -77,6 +77,12 @@
               <option value="Device Repair">Device Repair</option>
               <option value="Cleaning">Cleaning</option>
               <option value="Painting">Painting</option>
+            </select>
+          </div>
+          <div id="issue-type-field" style="margin-bottom:16px;display:none">
+            <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Issue Type</label>
+            <select name="issueType">
+              <option value="">Select issue type</option>
             </select>
           </div>
           <div style="margin-bottom:16px">

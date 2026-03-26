@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const ServiceSchema = new mongoose.Schema({
   customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   serviceType: { type: String, required: true },
+  issueType: { type: String },
   description: { type: String },
   status: { type: String, enum: ['requested','assigned','in_progress','completed','cancelled'], default: 'requested' },
   provider: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

@@ -1,0 +1,5 @@
+@import url('./style.css');
+
+.auth-page {
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}

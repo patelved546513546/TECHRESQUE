@@ -47,34 +47,6 @@ document.getElementById('availability').addEventListener('change', async (e)=>{
   setTimeout(() => loadAssigned(), 500);
 });
 
-// Service type selector
-document.getElementById('service-type-selector').addEventListener('change', async (e)=>{
-  const serviceType = e.target.value;
-  if (!serviceType) return;
-  
-  try {
-    const res = await fetch(`${API_P}/providers/profile`, { 
-      method:'POST', 
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+provToken}, 
-      body:JSON.stringify({serviceType}) 
-    });
-    const data = await res.json();
-    
-    // Store in localStorage for quick access
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    user.serviceType = serviceType;
-    localStorage.setItem('user', JSON.stringify(user));
-    
-    showToast(`✓ Your specialty updated to ${serviceType}!`, 'success');
-    
-    // Refresh pending requests with new service type
-    setTimeout(() => loadPendingRequests(), 500);
-  } catch (err) { 
-    showToast('Could not update specialty', 'error');
-    e.target.value = '';
-  }
-});
-
 // Event delegation for pending job accept buttons
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('accept-pending-btn')) {
@@ -121,8 +93,10 @@ async function loadAssigned(){
       if (s.status === 'completed') statusIcon = '✓';
 
       const header = document.createElement('div');
+      const issueLabel = s.issueType || 'General request';
       header.innerHTML = `
         <h3 style="margin:0 0 8px 0">${statusIcon} ${s.serviceType}</h3>
+        <p style="margin:0 0 6px 0;color:#1a73e8;font-size:13px;font-weight:700">Issue: ${issueLabel}</p>
         <p style="margin:0 0 4px 0;color:#666;font-size:14px">Customer: <strong>${s.customer?.name || 'Unknown'}</strong></p>
         <p style="margin:0 0 4px 0;color:#666;font-size:13px">📞 ${s.customer?.phone || 'Not provided'}</p>
         <p style="margin:0 0 12px 0;color:#555;font-size:13px;line-height:1.4">${s.description.substring(0, 60)}${s.description.length > 60 ? '...' : ''}</p>
@@ -280,6 +254,8 @@ async function loadPendingRequests(){
               <span style="background:#dbeafe;color:#0369a1;padding:4px 10px;border-radius:20px;font-weight:600;font-size:11px">⏱️ ${timeText}</span>
             </div>
           </div>
+
+          <p style="margin:0 0 10px 0;color:#1a73e8;font-size:13px;font-weight:700">Issue: ${s.issueType || 'General request'}</p>
           
           <div style="background:#f0f9ff;padding:12px;border-radius:8px;margin-bottom:12px;border-left:3px solid #3b82f6">
             <p style="margin:0 0 6px 0;color:#0369a1;font-weight:600;font-size:14px">👤 ${s.customer?.name || 'Unknown Customer'}</p>
@@ -311,7 +287,7 @@ async function loadPendingRequests(){
 // Load earnings breakdown
 async function loadEarnings(){
   try{
-    const res = await fetch(`${API_P}/provider/earnings`, { headers:{'Authorization':'Bearer '+provToken} });
+    const res = await fetch(`${API_P}/services/provider/earnings`, { headers:{'Authorization':'Bearer '+provToken} });
     const earnings = await res.json();
     
     document.getElementById('earnings-today').innerText = `₹${earnings.today}`;
@@ -349,15 +325,26 @@ async function acceptPendingJob(id){
   }
 }
 
-// Load current provider profile from localStorage
+// Load provider profile and show fixed specialty selected during signup.
 async function loadProviderProfile(){
   try{
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user.serviceType) {
-      document.getElementById('service-type-selector').value = user.serviceType;
+    const res = await fetch(`${API_P}/providers/profile`, {
+      headers:{'Authorization':'Bearer '+provToken}
+    });
+
+    const badge = document.getElementById('service-type-display');
+    if (!res.ok) {
+      badge.innerText = 'Specialty: Not set';
+      return;
     }
+
+    const provider = await res.json();
+    const serviceType = provider?.serviceType || 'Not set';
+    badge.innerText = `Specialty: ${serviceType}`;
   }catch(err){
     console.error('Error loading provider profile:', err);
+    const badge = document.getElementById('service-type-display');
+    if (badge) badge.innerText = 'Specialty: Not set';
   }
 }
 

@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Tech Resque - Professional Services at Your Door</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script>const API = 'http://localhost:5000/api';</script>
 </head>
-<body>
+<body class="home-page">
   <!-- Navigation -->
   <nav class="navbar">
     <div class="container">
@@ -29,31 +29,31 @@
   <!-- Main Content -->
   <main class="container">
     <!-- Service Categories -->
-    <section style="margin-top:20px">
-      <h2 style="margin:12px 0">What are you looking for?</h2>
+    <section class="home-top-gap">
+      <h2 class="home-title-tight">What are you looking for?</h2>
       <div class="service-categories">
-        <div class="category-card" onclick="filterServices('all')">
-          <div class="category-icon">🔌</div>
+        <div class="category-card cat-electrician" onclick="filterServices('all')">
+          <div class="category-icon"><i class="fas fa-bolt"></i></div>
           <p>Electrician</p>
         </div>
-        <div class="category-card" onclick="filterServices('plumber')">
-          <div class="category-icon">🚰</div>
+        <div class="category-card cat-plumber" onclick="filterServices('plumber')">
+          <div class="category-icon"><i class="fas fa-faucet-drip"></i></div>
           <p>Plumber</p>
         </div>
-        <div class="category-card" onclick="filterServices('repair')">
-          <div class="category-icon">💻</div>
+        <div class="category-card cat-repair" onclick="filterServices('repair')">
+          <div class="category-icon"><i class="fas fa-laptop-medical"></i></div>
           <p>Tech Repair</p>
         </div>
-        <div class="category-card" onclick="filterServices('cleaning')">
-          <div class="category-icon">🧹</div>
+        <div class="category-card cat-cleaning" onclick="filterServices('cleaning')">
+          <div class="category-icon"><i class="fas fa-pump-soap"></i></div>
           <p>Cleaning</p>
         </div>
-        <div class="category-card" onclick="filterServices('painting')">
-          <div class="category-icon">🎨</div>
+        <div class="category-card cat-painting" onclick="filterServices('painting')">
+          <div class="category-icon"><i class="fas fa-paint-roller"></i></div>
           <p>Painting</p>
         </div>
-        <div class="category-card" onclick="filterServices('home')">
-          <div class="category-icon">🏠</div>
+        <div class="category-card cat-home" onclick="filterServices('home')">
+          <div class="category-icon"><i class="fas fa-house-chimney"></i></div>
           <p>Home Repair</p>
         </div>
       </div>
@@ -61,7 +61,7 @@
 
     <!-- Most Booked Services -->
     <section id="popular">
-      <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="section-head">
         <div>
           <h2 style="margin:0">Most Booked Services</h2>
           <p class="section-subtitle">Get work done by our trusted professionals</p>
@@ -69,7 +69,7 @@
       </div>
       <div class="cards-scroll">
         <div class="service-card electrician">
-          <div class="service-image">🔌</div>
+          <div class="service-image img-electrician"><span class="service-image-label">Certified Electrician</span></div>
           <div class="service-content">
             <div class="service-title">Electrical Wiring & Installation</div>
             <div class="service-details">
@@ -85,7 +85,7 @@
         </div>
 
         <div class="service-card plumber">
-          <div class="service-image">🚰</div>
+          <div class="service-image img-plumber"><span class="service-image-label">Leak & Pipe Repair</span></div>
           <div class="service-content">
             <div class="service-title">Tap & Leak Repair</div>
             <div class="service-details">
@@ -101,7 +101,7 @@
         </div>
 
         <div class="service-card repair">
-          <div class="service-image">💻</div>
+          <div class="service-image img-repair"><span class="service-image-label">Device Diagnostics</span></div>
           <div class="service-content">
             <div class="service-title">Device Repair & Diagnosis</div>
             <div class="service-details">
@@ -117,7 +117,7 @@
         </div>
 
         <div class="service-card cleaning">
-          <div class="service-image">🧹</div>
+          <div class="service-image img-cleaning"><span class="service-image-label">Deep Home Cleaning</span></div>
           <div class="service-content">
             <div class="service-title">Home Deep Cleaning</div>
             <div class="service-details">
@@ -133,7 +133,7 @@
         </div>
 
         <div class="service-card painting">
-          <div class="service-image">🎨</div>
+          <div class="service-image img-painting"><span class="service-image-label">Interior Painting</span></div>
           <div class="service-content">
             <div class="service-title">Home Painting Service</div>
             <div class="service-details">
@@ -149,7 +149,7 @@
         </div>
 
         <div class="service-card home">
-          <div class="service-image">🏠</div>
+          <div class="service-image img-home"><span class="service-image-label">Home Handyman</span></div>
           <div class="service-content">
             <div class="service-title">Door Lock & Hinge Repair</div>
             <div class="service-details">
@@ -168,7 +168,7 @@
 
     <!-- New & Noteworthy -->
     <section>
-      <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="section-head">
         <div>
           <h2 style="margin:0">New & Noteworthy</h2>
           <p class="section-subtitle">Explore our latest services</p>
@@ -177,7 +177,7 @@
       <div class="cards-scroll">
         <div class="service-card new">
           <div style="position:relative">
-            <div class="service-image" style="height:160px">🔐</div>
+            <div class="service-image img-lock" style="height:160px"><span class="service-image-label">Smart Security Setup</span></div>
             <div class="badge-new" style="position:absolute;top:10px;right:10px">New</div>
           </div>
           <div class="service-content">
@@ -196,7 +196,7 @@
 
         <div class="service-card new">
           <div style="position:relative">
-            <div class="service-image" style="height:160px">💡</div>
+            <div class="service-image img-led" style="height:160px"><span class="service-image-label">Modern LED Upgrade</span></div>
             <div class="badge-new" style="position:absolute;top:10px;right:10px">New</div>
           </div>
           <div class="service-content">
@@ -215,7 +215,7 @@
 
         <div class="service-card new">
           <div style="position:relative">
-            <div class="service-image" style="height:160px">🚰</div>
+            <div class="service-image img-water" style="height:160px"><span class="service-image-label">Pure Water Installation</span></div>
             <div class="badge-new" style="position:absolute;top:10px;right:10px">New</div>
           </div>
           <div class="service-content">
@@ -234,7 +234,7 @@
 
         <div class="service-card new">
           <div style="position:relative">
-            <div class="service-image" style="height:160px">🔧</div>
+            <div class="service-image img-appliance" style="height:160px"><span class="service-image-label">Appliance Maintenance</span></div>
             <div class="badge-new" style="position:absolute;top:10px;right:10px">New</div>
           </div>
           <div class="service-content">

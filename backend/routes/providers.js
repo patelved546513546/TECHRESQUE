@@ -8,9 +8,27 @@ router.post('/profile', auth, permit('provider'), async (req, res) => {
   try {
     const { serviceType } = req.body;
     let p = await Provider.findOne({ user: req.user._id });
-    if (!p) p = new Provider({ user: req.user._id, serviceType, available: true });
-    else p.serviceType = serviceType || p.serviceType;
+
+    // Specialty is fixed after signup; only allow creating profile if missing.
+    if (p) {
+      return res.status(400).json({ message: 'Specialty is fixed after signup and cannot be changed', provider: p });
+    }
+
+    if (!serviceType) {
+      return res.status(400).json({ message: 'serviceType is required' });
+    }
+
+    p = new Provider({ user: req.user._id, serviceType, available: true });
     await p.save();
+    res.json(p);
+  } catch (err) { res.status(500).json({ message: 'Server error' }); }
+});
+
+// Get current provider profile
+router.get('/profile', auth, permit('provider'), async (req, res) => {
+  try {
+    const p = await Provider.findOne({ user: req.user._id });
+    if (!p) return res.status(404).json({ message: 'Provider profile not found' });
     res.json(p);
   } catch (err) { res.status(500).json({ message: 'Server error' }); }
 });

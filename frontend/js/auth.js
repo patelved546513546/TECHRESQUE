@@ -10,6 +10,8 @@ const locationBtn = document.getElementById('location-btn');
 const locationStatus = document.getElementById('location-status');
 const paymentDetailsDiv = document.getElementById('payment-details');
 const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethod"]');
+const phoneRegex = /^\d{10}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
 // Get location button click
 locationBtn.addEventListener('click', (e) => {
@@ -103,6 +105,9 @@ toggleBtn.addEventListener('click', ()=>{
 signupForm.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const data = Object.fromEntries(new FormData(e.target).entries());
+
+  data.phone = (data.phone || '').trim();
+  data.password = (data.password || '').trim();
   
   if (!data.email || !data.password || !data.name) {
     showToast('Please fill all required fields', 'error');
@@ -111,6 +116,16 @@ signupForm.addEventListener('submit', async (e)=>{
   
   if (data.role === 'provider' && !data.serviceType) {
     showToast('Please select your service specialty', 'error');
+    return;
+  }
+
+  if (!phoneRegex.test(data.phone)) {
+    showToast('Phone number must be exactly 10 digits', 'error');
+    return;
+  }
+
+  if (!passwordRegex.test(data.password)) {
+    showToast('Password must be 8+ chars with uppercase, lowercase, number, and special character', 'error');
     return;
   }
 

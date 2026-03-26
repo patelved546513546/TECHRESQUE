@@ -10,7 +10,7 @@ const router = express.Router();
 // Stays as "requested" until a provider accepts it
 router.post('/', auth, permit('customer'), async (req, res) => {
   try {
-    const { serviceType, description, basePrice } = req.body;
+    const { serviceType, issueType, description, basePrice } = req.body;
     
     // Get customer location for pricing calculation
     const customerUser = await User.findById(req.user._id).select('latitude longitude address');
@@ -18,6 +18,7 @@ router.post('/', auth, permit('customer'), async (req, res) => {
     const service = new Service({ 
       customer: req.user._id, 
       serviceType, 
+      issueType,
       description,
       basePrice: basePrice || 500,
       status: 'requested',  // Start as requested - NO AUTO ASSIGN
@@ -265,6 +266,12 @@ router.patch('/:id/status', auth, permit('provider'), async (req, res) => {
     const service = await Service.findById(req.params.id);
     if (!service) return res.status(404).json({ message: 'Not found' });
     if (!service.provider || service.provider.toString() !== req.user._id.toString()) return res.status(403).json({ message: 'Not assigned' });
+
+    // Ensure provider earning is present once job is completed.
+    if (status === 'completed' && (!service.providerEarning || service.providerEarning === 0)) {
+      service.providerEarning = Math.round((service.finalPrice || service.basePrice || 0) * 0.7);
+    }
+
     service.status = status;
     await service.save();
     res.json(service);
@@ -333,31 +340,36 @@ router.get('/provider/earnings', auth, permit('provider'), async (req, res) => {
     weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week (Sunday)
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    // Get completed services for this provider
+    // Get completed services for this provider.
+    // Earnings should reflect completed jobs immediately, not only after payment confirmation.
     const completedServices = await Service.find({
       provider: req.user._id,
-      status: 'completed',
-      paymentStatus: 'paid'
+      status: 'completed'
     });
+
+    const earningOf = (s) => {
+      if (s.providerEarning && s.providerEarning > 0) return s.providerEarning;
+      return Math.round((s.finalPrice || s.basePrice || 0) * 0.7);
+    };
 
     // Filter by time periods
     const todayEarnings = completedServices
       .filter(s => new Date(s.updatedAt).getTime() >= today.getTime())
-      .reduce((sum, s) => sum + (s.providerEarning || 0), 0);
+      .reduce((sum, s) => sum + earningOf(s), 0);
 
     const weekEarnings = completedServices
       .filter(s => new Date(s.updatedAt).getTime() >= weekStart.getTime())
-      .reduce((sum, s) => sum + (s.providerEarning || 0), 0);
+      .reduce((sum, s) => sum + earningOf(s), 0);
 
     const monthEarnings = completedServices
       .filter(s => new Date(s.updatedAt).getTime() >= monthStart.getTime())
-      .reduce((sum, s) => sum + (s.providerEarning || 0), 0);
+      .reduce((sum, s) => sum + earningOf(s), 0);
 
     res.json({
       today: todayEarnings,
       week: weekEarnings,
       month: monthEarnings,
-      total: completedServices.reduce((sum, s) => sum + (s.providerEarning || 0), 0)
+      total: completedServices.reduce((sum, s) => sum + earningOf(s), 0)
     });
   } catch (err) {
     console.error(err);

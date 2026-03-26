@@ -3,10 +3,21 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Provider = require('../models/Provider');
 const router = express.Router();
+const phoneRegex = /^\d{10}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, password, role, phone, serviceType, address, latitude, longitude, upiId, cardLast4, bankAccount } = req.body;
+
+    if (!phoneRegex.test((phone || '').trim())) {
+      return res.status(400).json({ message: 'Phone number must be exactly 10 digits' });
+    }
+
+    if (!passwordRegex.test((password || '').trim())) {
+      return res.status(400).json({ message: 'Password must be 8+ chars with uppercase, lowercase, number, and special character' });
+    }
+
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: 'User already exists' });
     
