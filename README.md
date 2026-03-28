@@ -376,3 +376,60 @@ License & notes
 ---------------
 This demo is provided as-is for development and testing. Do NOT run with default secrets in production.
 
+## OTP (On-site Verification) Flow
+
+This project includes an OTP (one-time password) workflow used by providers to verify the customer when they arrive on-site.
+
+What happens:
+- Provider accepts a job -> status `assigned`
+- When the provider reaches the customer they trigger OTP generation
+- Backend generates a 6-digit OTP, stores it on the `Service` (`otpCode`, `otpExpiresAt`, `otpVerified`) and emails it to the customer's current email
+- Provider asks the customer for the OTP and calls the verify endpoint to move the job to `in_progress`
+
+Environment variables (in `backend/.env`) required for email sending:
+
+- `EMAIL_SERVICE` (e.g. `gmail`)
+- `EMAIL_USER` (Gmail address used to send messages)
+- `EMAIL_PASS` (Google App Password — 16 characters, spaces removed)
+- `EMAIL_FROM` (optional, defaults to `EMAIL_USER`)
+
+Gmail notes:
+- Enable 2-Step Verification on the account and create an App Password. Paste the 16-character app password into `EMAIL_PASS` (remove spaces shown in the UI).
+
+API endpoints (OTP):
+
+- Generate OTP (provider):
+   - POST `/api/services/:id/otp/generate`
+   - Auth: provider JWT
+   - Behavior: generates OTP, saves to service, emails customer's current email (loaded from the `User` record)
+
+- Verify OTP (provider):
+   - POST `/api/services/:id/otp/verify`  { "otp": "123456" }
+   - Auth: provider JWT
+   - Behavior: validates OTP and expiry, sets `otpVerified = true` and `status = 'in_progress'`
+
+Quick manual test (curl)
+
+1) Start server (from repo root):
+```
+cd tech-resque
+npm start
+```
+
+2) Generate OTP (replace `<SERVICE_ID>` and provide a valid provider JWT):
+```
+curl -X POST -H "Authorization: Bearer <PROVIDER_JWT>" http://localhost:5000/api/services/<SERVICE_ID>/otp/generate
+```
+
+3) Verify OTP (provider enters the OTP shown to customer):
+```
+curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer <PROVIDER_JWT>" -d '{"otp":"123456"}' http://localhost:5000/api/services/<SERVICE_ID>/otp/verify
+```
+
+Developer testing notes
+- The backend always fetches the customer's latest email from the `User` record before sending the OTP, so changing a customer's email updates where OTPs are delivered.
+- If you need to test without real email delivery, temporarily set `EMAIL_SERVICE=none` and mock the email sending in code, or use the provider UI and verify the `Service` document in the database to inspect `otpCode`/`otpExpiresAt` (development only).
+
+Security notes
+- In production, consider hashing OTPs instead of storing them in plain text, rate-limiting OTP generation, and logging/monitoring suspicious activity.
+
