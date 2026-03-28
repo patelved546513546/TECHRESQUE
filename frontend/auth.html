@@ -103,40 +103,10 @@
                   <i class="fas fa-location-dot"></i> My Location
                 </button>
               </div>
+              <small id="address-error" style="color:#dc2626;margin-top:4px;display:none"></small>
               <input type="hidden" name="latitude" value="" />
               <input type="hidden" name="longitude" value="" />
               <small id="location-status" style="color:#1a73e8;margin-top:4px;display:block"></small>
-            </div>
-            <div style="margin-bottom:16px">
-              <label style="display:block;font-weight:600;margin-bottom:8px;font-size:14px">Preferred Payment Method</label>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border:1px solid #ddd;border-radius:4px;font-weight:500">
-                  <input type="radio" name="paymentMethod" value="cash" checked /> Cash
-                </label>
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border:1px solid #ddd;border-radius:4px;font-weight:500">
-                  <input type="radio" name="paymentMethod" value="card" /> Card
-                </label>
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border:1px solid #ddd;border-radius:4px;font-weight:500">
-                  <input type="radio" name="paymentMethod" value="upi" /> UPI
-                </label>
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border:1px solid #ddd;border-radius:4px;font-weight:500">
-                  <input type="radio" name="paymentMethod" value="bank" /> Bank
-                </label>
-              </div>
-            </div>
-            <div id="payment-details" style="margin-bottom:16px;display:none">
-              <div id="upi-field" style="margin-bottom:12px;display:none">
-                <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">UPI ID</label>
-                <input name="upiId" placeholder="example@upi" />
-              </div>
-              <div id="card-field" style="margin-bottom:12px;display:none">
-                <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Card Last 4 Digits</label>
-                <input name="cardLast4" placeholder="e.g., 1234" maxlength="4" />
-              </div>
-              <div id="bank-field" style="margin-bottom:12px;display:none">
-                <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Bank Account Number</label>
-                <input name="bankAccount" placeholder="Account number" />
-              </div>
             </div>
             <div style="margin-bottom:20px">
               <label style="display:block;font-weight:600;margin-bottom:6px;font-size:14px">Password</label>

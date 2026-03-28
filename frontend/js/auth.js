@@ -8,10 +8,92 @@ const roleSelect = document.getElementById('role-select');
 const serviceTypeField = document.getElementById('service-type-field');
 const locationBtn = document.getElementById('location-btn');
 const locationStatus = document.getElementById('location-status');
-const paymentDetailsDiv = document.getElementById('payment-details');
-const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethod"]');
+const addressInput = signupForm.querySelector('input[name="address"]');
+const addressError = document.getElementById('address-error');
 const phoneRegex = /^\d{10}$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+function setAddressError(message) {
+  addressError.textContent = message;
+  addressError.style.display = 'block';
+}
+
+function clearAddressError() {
+  addressError.textContent = '';
+  addressError.style.display = 'none';
+}
+
+function isAddressFormatValid(address) {
+  const parts = (address || '').split(',').map((part) => part.trim()).filter(Boolean);
+  return parts.length >= 3;
+}
+
+function setLocationButtonDefault() {
+  locationBtn.innerHTML = '<i class="fas fa-location-dot"></i> My Location';
+}
+
+function toCityStateCountry(city, state, country) {
+  const parts = [city, state, country].map((v) => (v || '').trim()).filter(Boolean);
+  if (parts.length < 2) {
+    throw new Error('Could not detect city/state/country');
+  }
+  return parts.join(', ');
+}
+
+async function reverseGeocodeWithNominatim(lat, lon) {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Nominatim request failed');
+  }
+
+  const data = await response.json();
+  const a = data.address || {};
+  const city = a.city || a.town || a.village || a.county || a.state_district || '';
+  const state = a.state || '';
+  const country = a.country || '';
+  return toCityStateCountry(city, state, country);
+}
+
+async function reverseGeocodeWithBigDataCloud(lat, lon) {
+  const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('BigDataCloud request failed');
+  }
+
+  const data = await response.json();
+  const city = data.city || data.locality || data.principalSubdivision || '';
+  const state = data.principalSubdivision || data.localityInfo?.administrative?.[1]?.name || '';
+  const country = data.countryName || '';
+  return toCityStateCountry(city, state, country);
+}
+
+async function reverseGeocodeCityStateCountry(lat, lon) {
+  const providers = [reverseGeocodeWithNominatim, reverseGeocodeWithBigDataCloud];
+  let lastError = null;
+
+  for (const provider of providers) {
+    try {
+      return await provider(lat, lon);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error('Reverse geocoding failed');
+}
 
 // Get location button click
 locationBtn.addEventListener('click', (e) => {
@@ -22,56 +104,45 @@ locationBtn.addEventListener('click', (e) => {
   }
   
   locationBtn.disabled = true;
-  locationBtn.innerText = 'Getting location...';
+  locationBtn.textContent = 'Getting location...';
   locationStatus.textContent = '';
+  clearAddressError();
   
   navigator.geolocation.getCurrentPosition(
-    (position) => {
+    async (position) => {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
       
       signupForm.querySelector('input[name="latitude"]').value = lat;
       signupForm.querySelector('input[name="longitude"]').value = lon;
-      
-      locationStatus.textContent = `✓ Location captured: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
-      locationStatus.style.color = '#00a65a';
+
+      try {
+        const locationLabel = await reverseGeocodeCityStateCountry(lat, lon);
+        addressInput.value = locationLabel;
+        locationStatus.textContent = `Location set: ${locationLabel}`;
+        locationStatus.style.color = '#00a65a';
+      } catch (geocodeError) {
+        locationStatus.textContent = 'Location captured, but city details were not found. Enter address manually as City, State, Country.';
+        locationStatus.style.color = '#f59e0b';
+      }
+
       locationBtn.disabled = false;
-      locationBtn.innerText = '✓ Location Set';
+      locationBtn.textContent = 'Location Set';
       locationBtn.style.background = '#00a65a';
       locationBtn.style.color = '#fff';
     },
     (error) => {
       showToast('Could not get location: ' + error.message, 'error');
       locationBtn.disabled = false;
-      locationBtn.innerText = '📍 Try Again';
+      setLocationButtonDefault();
+      locationBtn.style.background = '';
+      locationBtn.style.color = '';
     }
   );
 });
 
-// Payment method selection toggle
-paymentMethodRadios.forEach(radio => {
-  radio.addEventListener('change', (e) => {
-    const method = e.target.value;
-    
-    // Hide all payment details first
-    document.getElementById('upi-field').style.display = 'none';
-    document.getElementById('card-field').style.display = 'none';
-    document.getElementById('bank-field').style.display = 'none';
-    
-    // Show relevant payment details
-    if (method === 'upi') {
-      document.getElementById('upi-field').style.display = 'block';
-      paymentDetailsDiv.style.display = 'block';
-    } else if (method === 'card') {
-      document.getElementById('card-field').style.display = 'block';
-      paymentDetailsDiv.style.display = 'block';
-    } else if (method === 'bank') {
-      document.getElementById('bank-field').style.display = 'block';
-      paymentDetailsDiv.style.display = 'block';
-    } else {
-      paymentDetailsDiv.style.display = 'none';
-    }
-  });
+addressInput.addEventListener('input', () => {
+  clearAddressError();
 });
 
 // Show/hide service type field based on role selection
@@ -129,25 +200,22 @@ signupForm.addEventListener('submit', async (e)=>{
     return;
   }
 
-  // Validate location
-  if (!data.address || !data.latitude || !data.longitude) {
-    showToast('Please enter your address and get your location', 'error');
+  if (!data.address) {
+    setAddressError('Address is required.');
     return;
   }
 
-  // Validate payment details if not cash
-  if (data.paymentMethod === 'upi' && !data.upiId) {
-    showToast('Please enter your UPI ID', 'error');
+  if (!isAddressFormatValid(data.address)) {
+    setAddressError('Enter address in this format: City, State, Country.');
     return;
   }
-  if (data.paymentMethod === 'card' && !data.cardLast4) {
-    showToast('Please enter last 4 digits of your card', 'error');
+
+  if (!data.latitude || !data.longitude) {
+    setAddressError('Click My Location to auto-fill City, State, Country.');
     return;
   }
-  if (data.paymentMethod === 'bank' && !data.bankAccount) {
-    showToast('Please enter your bank account number', 'error');
-    return;
-  }
+
+  clearAddressError();
 
   // Convert lat/lon to numbers
   data.latitude = parseFloat(data.latitude);
@@ -199,3 +267,5 @@ function redirectByRole(role){
   else if (role === 'provider') location.href='provider-dashboard.html';
   else location.href='admin-dashboard.html';
 }
+
+setLocationButtonDefault();

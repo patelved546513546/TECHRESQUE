@@ -3,3 +3,22 @@
 .admin-page {
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
 }
+
+.analytics-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+#provider-modal {
+  z-index: 1000;
+}
+
+@media (max-width: 900px) {
+  canvas {
+    max-width: 100%;
+  }
+}

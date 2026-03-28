@@ -6,6 +6,10 @@
   <title>Admin Dashboard - Tech Resque</title>
   <link rel="stylesheet" href="css/admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    canvas { width: 100% !important; height: 100% !important; }
+  </style>
 </head>
 <body class="admin-page">
   <!-- Navigation -->
@@ -32,8 +36,8 @@
 
     <!-- Statistics -->
     <section style="margin:40px 0">
-      <h2 style="margin-bottom:20px">Platform Overview</h2>
-      <div class="grid">
+      <h2 style="margin-bottom:20px">Business Analytics</h2>
+      <div class="grid analytics-grid">
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:start">
             <div>
@@ -46,7 +50,7 @@
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:start">
             <div>
-              <p style="margin:0 0 8px 0;color:#666;font-size:14px">Active Services</p>
+              <p style="margin:0 0 8px 0;color:#666;font-size:14px">Total Services</p>
               <div id="stat-services" style="font-size:32px;font-weight:700;color:#34a853">0</div>
             </div>
             <i class="fas fa-tasks" style="font-size:32px;color:#e8e8e8"></i>
@@ -61,6 +65,73 @@
             <i class="fas fa-user-tie" style="font-size:32px;color:#e8e8e8"></i>
           </div>
         </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <p style="margin:0 0 8px 0;color:#666;font-size:14px">Today's Earnings</p>
+              <div id="stat-today-earnings" style="font-size:32px;font-weight:700;color:#16a34a">INR 0</div>
+            </div>
+            <i class="fas fa-sack-dollar" style="font-size:32px;color:#e8e8e8"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <p style="margin:0 0 8px 0;color:#666;font-size:14px">Active Professionals</p>
+              <div id="stat-active-pros" style="font-size:32px;font-weight:700;color:#ea580c">0</div>
+            </div>
+            <i class="fas fa-user-gear" style="font-size:32px;color:#e8e8e8"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <p style="margin:0 0 8px 0;color:#666;font-size:14px">Customers Who Used Platform</p>
+              <div id="stat-customers-used" style="font-size:32px;font-weight:700;color:#7c3aed">0</div>
+            </div>
+            <i class="fas fa-chart-line" style="font-size:32px;color:#e8e8e8"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin:40px 0">
+      <h2 style="margin-bottom:20px">Performance Snapshot</h2>
+      <div class="grid analytics-grid">
+        <div class="card">
+          <p style="margin:0 0 8px 0;color:#666;font-size:14px">Total Earnings</p>
+          <div id="stat-total-earnings" style="font-size:30px;font-weight:700;color:#0f766e">INR 0</div>
+        </div>
+        <div class="card">
+          <p style="margin:0 0 8px 0;color:#666;font-size:14px">Services Completed Today</p>
+          <div id="stat-completed-today" style="font-size:30px;font-weight:700;color:#1d4ed8">0</div>
+        </div>
+        <div class="card">
+          <p style="margin:0 0 8px 0;color:#666;font-size:14px">Customers Served Today</p>
+          <div id="stat-customers-today" style="font-size:30px;font-weight:700;color:#be123c">0</div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin:40px 0;display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div>
+        <h2 style="margin-bottom:20px">Service Demand Breakdown</h2>
+        <div class="card" style="padding:20px;height:350px;display:flex;align-items:center;justify-content:center">
+          <canvas id="demandChart"></canvas>
+        </div>
+      </div>
+      <div>
+        <h2 style="margin-bottom:20px">Revenue by Service Type</h2>
+        <div class="card" style="padding:20px;height:350px;display:flex;align-items:center;justify-content:center">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin:40px 0">
+      <h2 style="margin-bottom:20px">Last 7 Days Booking & Completion Trend</h2>
+      <div class="card" style="padding:20px;height:300px;display:flex;align-items:center;justify-content:center">
+        <canvas id="trendChart"></canvas>
       </div>
     </section>
 
@@ -86,19 +157,37 @@
     <section style="margin:40px 0;margin-bottom:80px">
       <h2 style="margin-bottom:20px">Service Management</h2>
       <div class="card" style="padding:0;overflow:hidden">
-        <table style="width:100%;border-collapse:collapse">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
           <thead>
             <tr style="background:#f5f5f5;border-bottom:2px solid #e8e8e8">
-              <th style="text-align:left;padding:16px;font-weight:600">Service</th>
-              <th style="text-align:left;padding:16px;font-weight:600">Customer</th>
-              <th style="text-align:left;padding:16px;font-weight:600">Status</th>
-              <th style="text-align:left;padding:16px;font-weight:600">Action</th>
+              <th style="text-align:left;padding:12px 14px;font-weight:600">Service Type</th>
+              <th style="text-align:left;padding:12px 14px;font-weight:600">Issue / Details</th>
+              <th style="text-align:left;padding:12px 14px;font-weight:600">Customer</th>
+              <th style="text-align:left;padding:12px 14px;font-weight:600">Status</th>
+              <th style="text-align:left;padding:12px 14px;font-weight:600">Action</th>
             </tr>
           </thead>
           <tbody id="all-services"></tbody>
         </table>
       </div>
     </section>
+
+    <!-- Provider Assignment Modal -->
+    <div id="provider-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center">
+      <div style="background:#fff;border-radius:8px;padding:24px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto">
+        <h3 style="margin:0 0 16px 0;font-size:18px">Assign Provider</h3>
+        <p style="margin:0 0 12px 0;color:#666;font-size:14px">Select a provider matching the service type:</p>
+        <div style="margin-bottom:16px;padding:12px;background:#f0f4f8;border-radius:4px;font-size:13px;color:#334155">
+          <strong>Service:</strong> <span id="modal-service-type">--</span><br />
+          <strong>For:</strong> <span id="modal-customer-name">--</span>
+        </div>
+        <div id="provider-list" style="max-height:300px;overflow-y:auto;margin-bottom:16px;border:1px solid #e2e8f0;border-radius:4px"></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button id="modal-cancel" style="padding:8px 16px;background:#e2e8f0;border:none;border-radius:4px;cursor:pointer;font-weight:500">Cancel</button>
+          <button id="modal-assign" style="padding:8px 16px;background:#1a73e8;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:500">Assign</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <!-- Footer -->
