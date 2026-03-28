@@ -19,6 +19,10 @@ const ServiceSchema = new mongoose.Schema({
   providerEarning: { type: Number, default: 0 }, // amount provider will receive
   providerPaid: { type: Boolean, default: false }, // whether provider confirmed payment received
   providerAccepted: { type: Boolean, default: false }, // provider accepted/started the job
+  // OTP verification when provider reaches customer
+  otpCode: { type: String }, // hashed or plain depending on security needs
+  otpExpiresAt: { type: Date },
+  otpVerified: { type: Boolean, default: false },
   
   // Expiration - auto cancels after 10 days if no provider accepts
   expiresAt: { type: Date, default: () => new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) } // 10 days from now

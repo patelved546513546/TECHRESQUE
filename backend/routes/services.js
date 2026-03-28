@@ -6,6 +6,27 @@ const { auth, permit } = require('../middleware/auth');
 const { calculateDistance, calculateFinalPrice } = require('../utils/distance');
 const router = express.Router();
 
+const nodemailer = require('nodemailer');
+
+// Helper to send OTP email
+async function sendOtpEmail(toEmail, otp, service) {
+  const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE || 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    to: toEmail,
+    subject: `Your OTP for ${service.serviceType} at TechResque`,
+    text: `Your one-time OTP is ${otp}. It will expire in 10 minutes. Please provide this to the provider to start the job.`
+  };
+
+  return transporter.sendMail(mailOptions);
+}
 // Customer: create service request - NO AUTO-ASSIGN
 // Stays as "requested" until a provider accepts it
 router.post('/', auth, permit('customer'), async (req, res) => {
@@ -69,6 +90,74 @@ router.post('/', auth, permit('customer'), async (req, res) => {
   } catch (err) { 
     console.error(err);
     res.status(500).json({ message: 'Server error' }); 
+  }
+});
+
+// Provider: Generate OTP when provider reaches customer (sends to customer email)
+router.post('/:id/otp/generate', auth, permit('provider'), async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.id).populate('customer', 'name email');
+    if (!service) return res.status(404).json({ message: 'Not found' });
+    if (!service.provider || service.provider.toString() !== req.user._id.toString()) return res.status(403).json({ message: 'Not assigned' });
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    service.otpCode = otp; // consider hashing in production
+    service.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    service.otpVerified = false;
+    await service.save();
+
+    // Always fetch the latest customer email from the User record
+    let toEmail = null;
+    try {
+      const freshCustomer = await User.findById(service.customer).select('email');
+      if (freshCustomer && freshCustomer.email) toEmail = freshCustomer.email;
+    } catch (fetchErr) {
+      console.error('Failed to fetch fresh customer email:', fetchErr);
+    }
+
+    // Send email to customer if we have an email address
+    if (toEmail) {
+      try {
+        await sendOtpEmail(toEmail, otp, service);
+      } catch (emailErr) {
+        console.error('Email send failed:', emailErr);
+        // continue - OTP still stored
+      }
+    } else {
+      console.warn(`No customer email found for service ${service._id} — OTP not emailed`);
+    }
+
+    res.json({ message: 'OTP generated and sent to customer', otpExpiresAt: service.otpExpiresAt });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Provider: Verify OTP before starting job
+router.post('/:id/otp/verify', auth, permit('provider'), async (req, res) => {
+  try {
+    const { otp } = req.body;
+    const service = await Service.findById(req.params.id);
+    if (!service) return res.status(404).json({ message: 'Not found' });
+    if (!service.provider || service.provider.toString() !== req.user._id.toString()) return res.status(403).json({ message: 'Not assigned' });
+
+    if (!service.otpCode || !service.otpExpiresAt) return res.status(400).json({ message: 'OTP not generated' });
+    if (service.otpVerified) return res.status(400).json({ message: 'OTP already verified' });
+    if (new Date() > new Date(service.otpExpiresAt)) return res.status(400).json({ message: 'OTP expired' });
+
+    if (String(otp).trim() !== String(service.otpCode).trim()) return res.status(400).json({ message: 'Invalid OTP' });
+
+    service.otpVerified = true;
+    // move to in_progress when OTP verified
+    service.status = 'in_progress';
+    await service.save();
+
+    res.json({ message: 'OTP verified. Job started.', service });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

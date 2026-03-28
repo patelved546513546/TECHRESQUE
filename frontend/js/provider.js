@@ -136,7 +136,7 @@ async function loadAssigned(){
             btnStart.style.background = '#fbbc04';
             btnStart.style.color = '#333';
             btnStart.style.fontWeight = '600';
-            btnStart.onclick = ()=> updateStatus(s._id,'in_progress');
+            btnStart.onclick = ()=> startJobWithOtp(s._id);
             actions.appendChild(btnStart);
           }
           // Show estimated earning
@@ -183,6 +183,36 @@ async function updateStatus(id, status){
   });
   showToast(`Job ${statusText === 'started' ? 'started ⏳' : 'completed ✓'}!`, 'success');
   loadAssigned();
+}
+
+// OTP flow: request OTP to be sent to customer, then verify and start job
+async function startJobWithOtp(id){
+  try{
+    // Generate OTP (sends to customer email)
+    const gen = await fetch(`${API_P}/services/${id}/otp/generate`, { method:'POST', headers:{'Authorization':'Bearer '+provToken} });
+    const genJson = await gen.json();
+    if (!gen.ok) {
+      showToast(genJson.message || 'Could not generate OTP', 'error');
+      return;
+    }
+
+    showToast('OTP sent to customer email. Ask the customer for the code.', 'info');
+
+    // Prompt provider to enter OTP they receive from customer
+    const entered = prompt('Enter the OTP provided by the customer (check email)');
+    if (!entered) { showToast('OTP entry cancelled', 'info'); return; }
+
+    const verify = await fetch(`${API_P}/services/${id}/otp/verify`, { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+provToken}, body: JSON.stringify({ otp: entered }) });
+    const verifyJson = await verify.json();
+    if (!verify.ok) { showToast(verifyJson.message || 'OTP verification failed', 'error'); return; }
+
+    showToast('OTP verified — job started', 'success');
+    // Refresh jobs to reflect in_progress status
+    loadAssigned();
+  }catch(err){
+    console.error('OTP start error', err);
+    showToast('Error during OTP flow', 'error');
+  }
 }
 
 async function acceptJob(id){
